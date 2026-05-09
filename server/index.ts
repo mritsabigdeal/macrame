@@ -19,7 +19,7 @@ app.use("/api/pre-delivery-review", preDeliveryRouter)
 app.get("/api/health", (_req, res) => res.json({ ok: true }))
 
 // Serve Vite frontend in production
-const distPath = path.join(__dirname, "../../dist")
+const distPath = path.join(process.cwd(), "dist")
 app.use(express.static(distPath))
 app.get("*", (_req, res) => {
   res.sendFile(path.join(distPath, "index.html"))
