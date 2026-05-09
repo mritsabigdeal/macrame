@@ -115,6 +115,8 @@ export interface CurrentDelivery {
   editSummary?: string
   caption?: string
   deliveryNotes?: string
+  imageBase64?: string
+  imageMediaType?: string
 }
 
 export interface IngestRequest {

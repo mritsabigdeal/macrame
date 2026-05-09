@@ -98,16 +98,39 @@ export function ProjectDetailView({ project, clientId, onBack }: ProjectDetailVi
     if (file) handleFile(file)
   }, [])
 
+  async function toBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => {
+        const result = reader.result as string
+        // Strip the data URL prefix, keep only the base64 payload
+        resolve(result.split(',')[1])
+      }
+      reader.onerror = reject
+      reader.readAsDataURL(file)
+    })
+  }
+
   async function handleAnalyze() {
     setAnalyzing(true)
     setAnalyzeError(null)
     setReview(null)
     try {
+      let imageBase64: string | undefined
+      let imageMediaType: string | undefined
+
+      if (assetFile && assetType === 'image') {
+        imageBase64 = await toBase64(assetFile)
+        imageMediaType = assetFile.type
+      }
+
       const result = await api.preDeliveryReview({
         clientId,
         currentDelivery: {
           editSummary: `Project: ${project.title}. Format: ${project.tag}.${assetFile ? ` Asset: ${assetFile.name}.` : ''}`,
           deliveryNotes: deliveryNotes || undefined,
+          imageBase64,
+          imageMediaType,
         },
       })
       setReview(result)
@@ -227,7 +250,7 @@ export function ProjectDetailView({ project, clientId, onBack }: ProjectDetailVi
                 </svg>
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ fontSize: 13, color: 'var(--fg-muted)', marginBottom: 4 }}>Drop image or video here</div>
-                  <div style={{ fontSize: 11, color: 'var(--fg-subtle)', fontFamily: 'var(--font-mono)' }}>or click to browse</div>
+                  <div style={{ fontSize: 11, color: 'var(--fg-subtle)', fontFamily: 'var(--font-mono)' }}>Images are analyzed by GPT-4o vision · video uses metadata only</div>
                 </div>
               </div>
             )}

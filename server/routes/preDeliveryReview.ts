@@ -34,7 +34,13 @@ router.post("/", async (req, res) => {
     }
 
     const userPrompt = buildPreDeliveryPrompt(clientId, currentDelivery, chunks)
-    const review = await generate<DeliveryReview>(PRE_DELIVERY_SYSTEM, userPrompt)
+
+    const review = await generate<DeliveryReview>(
+      PRE_DELIVERY_SYSTEM,
+      userPrompt,
+      currentDelivery.imageBase64,
+      currentDelivery.imageMediaType
+    )
 
     return res.json(review)
   } catch (err) {
