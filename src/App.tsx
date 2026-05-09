@@ -5,15 +5,23 @@ import { InboxView } from './components/InboxView'
 import { ClientProfileView } from './components/ClientProfileView'
 import { ProjectDetailView } from './components/ProjectDetailView'
 import { ChatPanel } from './components/ChatPanel'
+import { SplashPage } from './components/SplashPage'
 import type { Project } from './lib/types'
 
 type View = 'inbox' | 'profile' | 'project-detail'
 
 export default function App() {
+  const [showSplash, setShowSplash] = useState(true)
   const [view, setView] = useState<View>('inbox')
   const [selectedClientId, setSelectedClientId] = useState('field-notes')
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [role, setRole] = useState<'agency' | 'client'>('agency')
+
+  if (showSplash) {
+    document.body.classList.remove('app-mode')
+    return <SplashPage onEnter={() => { document.body.classList.add('app-mode'); setShowSplash(false) }} />
+  }
+  document.body.classList.add('app-mode')
 
   function navigate(nextView: View, clientId?: string) {
     if (clientId) setSelectedClientId(clientId)
