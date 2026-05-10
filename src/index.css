@@ -74,6 +74,13 @@ input, textarea {
   overflow: hidden;
 }
 
+.app.chat-closed {
+  grid-template-columns: 232px 1fr;
+  grid-template-areas:
+    "sidebar topbar"
+    "sidebar main";
+}
+
 .sidebar {
   grid-area: sidebar;
   background: oklch(0.18 0.009 60);
@@ -122,4 +129,65 @@ input, textarea {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--border-strong);
+}
+
+/* ── Mobile ─────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .app,
+  .app.chat-closed {
+    grid-template-columns: 1fr;
+    grid-template-rows: 52px 1fr;
+    grid-template-areas:
+      "topbar"
+      "main";
+  }
+
+  /* Sidebar becomes a fixed slide-in drawer */
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: 280px;
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 0.22s ease;
+    box-shadow: 4px 0 24px oklch(0.08 0.008 60 / 0.6);
+  }
+
+  .sidebar.sidebar-open {
+    transform: translateX(0);
+  }
+
+  .mobile-backdrop {
+    display: block !important;
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+  }
+
+  /* Show hamburger, hide search and some topbar controls */
+  .menu-btn {
+    display: flex !important;
+  }
+
+  .topbar-search,
+  .upload-btn {
+    display: none !important;
+  }
+
+  /* Full-width main content */
+  .main {
+    min-width: 0;
+  }
+
+  /* Chat panel hidden on mobile */
+  .chat-panel {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .topbar {
+    padding: 0 12px;
+    gap: 8px;
+  }
 }

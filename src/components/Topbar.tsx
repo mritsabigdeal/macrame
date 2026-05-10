@@ -5,6 +5,9 @@ interface TopbarProps {
   selectedClientId: string
   role: 'agency' | 'client'
   onRoleToggle: () => void
+  chatOpen: boolean
+  onChatToggle: () => void
+  onMenuToggle: () => void
 }
 
 function breadcrumb(view: string, selectedClientId: string) {
@@ -15,11 +18,27 @@ function breadcrumb(view: string, selectedClientId: string) {
   return ['Macrame']
 }
 
-export function Topbar({ view, selectedClientId, role, onRoleToggle }: TopbarProps) {
+export function Topbar({ view, selectedClientId, role, onRoleToggle, chatOpen, onChatToggle, onMenuToggle }: TopbarProps) {
   const crumbs = breadcrumb(view, selectedClientId)
 
   return (
     <div className="topbar">
+      {/* Hamburger — mobile only */}
+      <button
+        onClick={onMenuToggle}
+        className="menu-btn"
+        style={{
+          display: 'none',
+          alignItems: 'center', justifyContent: 'center',
+          width: 32, height: 32, borderRadius: 'var(--radius-sm)',
+          color: 'var(--fg-muted)', flexShrink: 0,
+        }}
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+          <path d="M3 6h18M3 12h18M3 18h18"/>
+        </svg>
+      </button>
+
       {/* Breadcrumb */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, flex: 1, minWidth: 0 }}>
         {crumbs.map((crumb, i) => (
@@ -40,7 +59,7 @@ export function Topbar({ view, selectedClientId, role, onRoleToggle }: TopbarPro
       </div>
 
       {/* Search */}
-      <div style={{
+      <div className="topbar-search" style={{
         display: 'flex',
         alignItems: 'center',
         gap: 8,
@@ -133,7 +152,7 @@ export function Topbar({ view, selectedClientId, role, onRoleToggle }: TopbarPro
         </button>
 
         {/* Upload */}
-        <button style={{
+        <button className="upload-btn" style={{
           display: 'flex',
           alignItems: 'center',
           gap: 6,
@@ -154,6 +173,26 @@ export function Topbar({ view, selectedClientId, role, onRoleToggle }: TopbarPro
             <path d="M2 12v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-1"/>
           </svg>
           Upload asset
+        </button>
+
+        {/* Chat toggle */}
+        <button
+          onClick={onChatToggle}
+          title={chatOpen ? 'Hide chat' : 'Show chat'}
+          style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            width: 30, height: 30, borderRadius: 'var(--radius-sm)',
+            border: '1px solid var(--border)',
+            background: chatOpen ? 'var(--bg-elevated)' : 'transparent',
+            color: chatOpen ? 'var(--fg)' : 'var(--fg-subtle)',
+            transition: 'all 0.15s', flexShrink: 0,
+          }}
+          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--border-strong)' }}
+          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--border)' }}
+        >
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
         </button>
       </div>
     </div>

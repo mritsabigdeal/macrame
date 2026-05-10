@@ -5,6 +5,8 @@ interface SidebarProps {
   view: string
   selectedClientId: string
   onNavigate: (view: string, clientId?: string) => void
+  mobileOpen?: boolean
+  onMobileClose?: () => void
 }
 
 const DM_MEMBERS = ['theo', 'jules', 'sana', 'kit']
@@ -85,11 +87,24 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   )
 }
 
-export function Sidebar({ view, selectedClientId, onNavigate }: SidebarProps) {
+export function Sidebar({ view, selectedClientId, onNavigate, mobileOpen, onMobileClose }: SidebarProps) {
   const mira = TEAM.mira
 
   return (
-    <div className="sidebar">
+    <>
+      {/* Mobile backdrop */}
+      {mobileOpen && (
+        <div
+          onClick={onMobileClose}
+          style={{
+            display: 'none',
+            position: 'fixed', inset: 0, zIndex: 40,
+            background: 'oklch(0.10 0.008 60 / 0.7)',
+          }}
+          className="mobile-backdrop"
+        />
+      )}
+    <div className={`sidebar${mobileOpen ? ' sidebar-open' : ''}`}>
       {/* Workspace mark */}
       <div style={{
         padding: '14px 14px 12px',
@@ -283,6 +298,7 @@ export function Sidebar({ view, selectedClientId, onNavigate }: SidebarProps) {
         </button>
       </div>
     </div>
+    </>
   )
 }
 

@@ -16,6 +16,8 @@ export default function App() {
   const [selectedClientId, setSelectedClientId] = useState('field-notes')
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [role, setRole] = useState<'agency' | 'client'>('agency')
+  const [chatOpen, setChatOpen] = useState(true)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   if (showSplash) {
     document.body.classList.remove('app-mode')
@@ -38,11 +40,13 @@ export default function App() {
   }
 
   return (
-    <div className="app">
+    <div className={`app${chatOpen ? '' : ' chat-closed'}`}>
       <Sidebar
         view={view}
         selectedClientId={selectedClientId}
-        onNavigate={(v, c) => navigate(v as View, c)}
+        onNavigate={(v, c) => { navigate(v as View, c); setSidebarOpen(false) }}
+        mobileOpen={sidebarOpen}
+        onMobileClose={() => setSidebarOpen(false)}
       />
 
       <Topbar
@@ -50,6 +54,9 @@ export default function App() {
         selectedClientId={selectedClientId}
         role={role}
         onRoleToggle={handleRoleToggle}
+        chatOpen={chatOpen}
+        onChatToggle={() => setChatOpen(o => !o)}
+        onMenuToggle={() => setSidebarOpen(o => !o)}
       />
 
       <main className="main">
@@ -75,7 +82,7 @@ export default function App() {
         )}
       </main>
 
-      <ChatPanel selectedClientId={selectedClientId} />
+      {chatOpen && <ChatPanel selectedClientId={selectedClientId} />}
     </div>
   )
 }
